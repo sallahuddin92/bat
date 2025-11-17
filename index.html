@@ -642,9 +642,15 @@
             dbOpenRequest.onsuccess = async (event) => {
                 db = event.target.result;
                 console.log("✓ Database initialized (v2) - Medicines, Charts, Settings");
-                await populateInitialData();
-                await populateMedicineDropdown();
-                await loadLastChart(); // Auto-load last saved chart
+                try {
+                    await populateInitialData();
+                    console.log("✓ Initial data population complete, now populating dropdown...");
+                    await populateMedicineDropdown();
+                    console.log("✓ Medicine dropdown populated");
+                    await loadLastChart(); // Auto-load last saved chart
+                } catch (error) {
+                    console.error("❌ Error during initialization sequence:", error);
+                }
             };
 
             dbOpenRequest.onerror = (event) => {
@@ -673,12 +679,17 @@
         }
 
         async function populateInitialData() {
-            if (!db) return;
+            if (!db) {
+                console.error("❌ Database not initialized");
+                return;
+            }
             try {
                 const transaction = db.transaction("medicines", "readwrite");
                 const objectStore = transaction.objectStore("medicines");
                 const countRequest = objectStore.count();
                 const count = await promisifyRequest(countRequest);
+
+                console.log(`📊 Database has ${count} medicines currently`);
 
                 if (count === 0) {
                     console.log("Database empty. Loading medicines from JSON file...");
@@ -702,10 +713,22 @@
                     }
                     
                     console.log(`✓ Populating ${medicines.length} medicines into database...`);
+                    let addedCount = 0;
                     for (const med of medicines) {
-                        await promisifyRequest(objectStore.add(med));
+                        try {
+                            await promisifyRequest(objectStore.add(med));
+                            addedCount++;
+                        } catch (error) {
+                            if (error.name === 'ConstraintError') {
+                                // Medicine already exists, update it instead
+                                await promisifyRequest(objectStore.put(med));
+                                addedCount++;
+                            } else {
+                                console.warn(`⚠️ Failed to add medicine ${med.code}:`, error.message);
+                            }
+                        }
                     }
-                    console.log("✓ Initial data populated successfully");
+                    console.log(`✓ Successfully added/updated ${addedCount} medicines to database`);
                 } else {
                     console.log(`✓ Database already populated with ${count} medicines.`);
                 }
@@ -720,8 +743,16 @@
         // DELETED handleSearch() and displaySearchResults() as they are no longer needed.
 
         async function populateMedicineDropdown() {
-            if (!db) return;
+            if (!db) {
+                console.warn("⚠️ Database not initialized, cannot populate dropdown");
+                return;
+            }
             const select = document.getElementById('med-select');
+            if (!select) {
+                console.error("❌ med-select element not found in HTML");
+                return;
+            }
+            
             // Clear existing options except the first placeholder
             while (select.options.length > 1) {
                 select.remove(1);
@@ -729,6 +760,20 @@
 
             try {
                 const medicines = await getAllMedicines();
+                console.log(`📋 Retrieved ${medicines.length} medicines from database for dropdown`);
+                
+                if (medicines.length === 0) {
+                    console.warn("⚠️ No medicines found in database!");
+                    select.appendChild(
+                        Object.assign(document.createElement('option'), {
+                            value: '',
+                            textContent: '-- No medicines available --',
+                            disabled: true
+                        })
+                    );
+                    return;
+                }
+                
                 medicines.sort((a, b) => a.generic_name.localeCompare(b.generic_name));
                 
                 for (const med of medicines) {
@@ -737,16 +782,34 @@
                     option.textContent = `${med.generic_name} (${med.code})`;
                     select.appendChild(option);
                 }
+                console.log(`✓ Added ${medicines.length} medicines to dropdown`);
             } catch (error) {
-                console.error("Error populating medicine dropdown: ", error);
+                console.error("❌ Error populating medicine dropdown:", error);
+                select.appendChild(
+                    Object.assign(document.createElement('option'), {
+                        value: '',
+                        textContent: '-- Error loading medicines --',
+                        disabled: true
+                    })
+                );
             }
         }
         
         async function getAllMedicines() {
-             if (!db) return [];
-             const transaction = db.transaction("medicines", "readonly");
-             const objectStore = transaction.objectStore("medicines");
-             return await promisifyRequest(objectStore.getAll());
+             if (!db) {
+                 console.error("❌ Database not available");
+                 return [];
+             }
+             try {
+                 const transaction = db.transaction("medicines", "readonly");
+                 const objectStore = transaction.objectStore("medicines");
+                 const medicines = await promisifyRequest(objectStore.getAll());
+                 console.log(`📦 getAllMedicines() returned ${medicines.length} medicines`);
+                 return medicines;
+             } catch (error) {
+                 console.error("❌ Error in getAllMedicines():", error);
+                 return [];
+             }
         }
 
         // DELETED displaySearchResults()
