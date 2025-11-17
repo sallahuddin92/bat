@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubat Saya (My Medicines) Chart Generator</title>
+    <!-- 1. Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. html2pdf.js for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- 3. Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.395.0/dist/umd/lucide.js"></script>
+    <style>
+        /* Enhanced scrollbar for aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3b82f6, #1e40af);
+            border-radius: 10px;
+            box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #1e40af, #1e3a8a);
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        /* Professional button styles */
+        button {
+            transition: all 0.2s ease;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0px);
+        }
+        
+        /* Input focus styles */
+        input[type="text"], input[type="file"], select {
+            transition: all 0.2s ease;
+        }
+        
+        input[type="text"]:focus, select:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 0 1px #3b82f6;
+            transform: translateY(-1px);
+        }
+        
+        /* Checkbox enhancement */
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 1.5rem;
+            height: 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="checkbox"]:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Style for the PDF content to ensure proper page breaks */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+        
+        /* Ensure icons are sized correctly */
+        .lucide-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke-width: 1.5;
+            transition: transform 0.2s ease;
+        }
+        
+        button:hover .lucide-icon {
+            transform: scale(1.1);
+        }
+        
+        /* Gradient backgrounds */
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .bg-gradient-green {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        /* Card elevation */
+        .card-elevated {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-elevated:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        /* Loading animation */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Tab button styles */
+        .tab-btn {
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-btn.active {
+            border-bottom-color: white;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Responsive grid */
+        @media (max-width: 768px) {
+            .grid-auto-fit {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800">
+
+    <!-- Main Container -->
+    <div class="container mx-auto max-w-6xl p-4 md:p-8">
+
+        <!-- Header -->
+        <header class="mb-6 rounded-xl border border-slate-200 bg-gradient-to-r from-blue-600 to-blue-700 p-6 shadow-lg card-elevated">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 text-white">
+                        <i data-lucide="pill" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Ubat Saya</h1>
+                        <p class="text-sm text-blue-100">Medicine Schedule Generator • Negeri Sembilan Health System</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="switchTab('chart')" class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2.5 text-sm font-bold text-white backdrop-blur hover:bg-white/30 transition transform hover:scale-105 tab-btn active" data-tab="chart">
+                        <i data-lucide="edit-3" class="lucide-icon h-4 w-4"></i>
+                        Create
+                    </button>
+                    <button onclick="switchTab('history')" class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2.5 text-sm font-bold text-white backdrop-blur hover:bg-white/30 transition transform hover:scale-105 tab-btn" data-tab="history">
+                        <i data-lucide="history" class="lucide-icon h-4 w-4"></i>
+                        History
+                    </button>
+                    <button onclick="toggleAdminPanel()" class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2.5 text-sm font-bold text-white backdrop-blur hover:bg-white/30 transition transform hover:scale-105">
+                        <i data-lucide="settings" class="lucide-icon h-4 w-4"></i>
+                        Medicines
+                    </button>
+                    <button onclick="document.getElementById('chart-menu-toggle').classList.toggle('hidden')" class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2.5 text-sm font-bold text-white backdrop-blur hover:bg-white/30 transition transform hover:scale-105">
+                        <i data-lucide="folder-open" class="lucide-icon h-4 w-4"></i>
+                        Charts
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Chart Management Dropdown -->
+        <div id="chart-menu-toggle" class="mb-6 hidden rounded-2xl border-2 border-slate-300 bg-gradient-to-br from-white to-slate-50 p-6 shadow-xl card-elevated">
+            <div class="flex items-center justify-between mb-5 pb-4 border-b-2 border-slate-200">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center">
+                        <i data-lucide="briefcase" class="h-5 w-5 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">Chart Management</h3>
+                </div>
+                <button onclick="document.getElementById('chart-menu-toggle').classList.add('hidden')" class="rounded-lg p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition">
+                    <i data-lucide="x" class="lucide-icon h-5 w-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-3 md:grid-cols-5 md:gap-2">
+                <button onclick="saveChart()" class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-3 font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                    <i data-lucide="save" class="h-4 w-4"></i> <span class="hidden md:inline">Save</span>
+                </button>
+                <button onclick="document.getElementById('load-chart-input').click()" class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                    <i data-lucide="download" class="h-4 w-4"></i> <span class="hidden md:inline">Load</span>
+                </button>
+                <button onclick="exportChartAsJSON()" class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-3 font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                    <i data-lucide="share-2" class="h-4 w-4"></i> <span class="hidden md:inline">Export</span>
+                </button>
+                <button onclick="document.getElementById('import-chart-input').click()" class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 text-white px-4 py-3 font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                    <i data-lucide="upload" class="h-4 w-4"></i> <span class="hidden md:inline">Import</span>
+                </button>
+                <button onclick="clearChart()" class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-3 font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                    <i data-lucide="trash-2" class="h-4 w-4"></i> <span class="hidden md:inline">Clear</span>
+                </button>
+            </div>
+            
+            <!-- Saved Charts List -->
+            <div id="saved-charts-container" class="mt-6 pt-4 border-t-2 border-slate-200"></div>
+            
+            <!-- Hidden File Inputs -->
+            <input type="file" id="load-chart-input" accept=".json" style="display: none;" onchange="handleLoadChart(event)">
+            <input type="file" id="import-chart-input" accept=".json" style="display: none;" onchange="handleImportChart(event)">
+        </div>
+
+        <!-- Admin Panel (Hidden by default) -->
+        <div id="admin-panel" class="mb-6 rounded-2xl border-2 border-slate-300 bg-gradient-to-br from-slate-50 to-blue-50 shadow-xl card-elevated" style="display: none;">
+            <div class="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-xl border-b-4 border-blue-800 p-6">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <i data-lucide="settings" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Manage Medicines (Admin Mode)</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportMedicinesToJSON()" class="rounded-lg bg-white/20 hover:bg-white/30 px-4 py-2 text-white font-semibold transition transform hover:scale-105 flex items-center gap-2">
+                        <i data-lucide="download" class="h-4 w-4"></i>
+                        Export JSON
+                    </button>
+                    <button onclick="toggleAdminPanel()" class="rounded-full p-2 text-white hover:bg-white/20 transition transform hover:scale-110">
+                        <i data-lucide="x" class="lucide-icon h-5 w-5"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-3">
+                <!-- Add New Medicine Form -->
+                <div class="md:col-span-1 rounded-xl bg-white p-6 shadow-md border border-slate-200">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="plus-circle" class="h-6 w-6 text-green-600"></i>
+                        <h3 class="text-lg font-bold text-slate-800">Add New Medicine</h3>
+                    </div>
+                    <form id="admin-add-form" onsubmit="handleAdminFormSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="admin-edit-mode" value="">
+                        <div>
+                            <label for="admin-code" class="mb-2 block text-sm font-semibold text-slate-700">Code (Unique ID)</label>
+                            <input type="text" id="admin-code" required class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition" placeholder="e.g., PARA500">
+                        </div>
+                        <div>
+                            <label for="admin-name" class="mb-2 block text-sm font-semibold text-slate-700">Generic Name</label>
+                            <input type="text" id="admin-name" required class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition" placeholder="e.g., Paracetamol 500mg">
+                        </div>
+                        <div>
+                            <label for="admin-brands" class="mb-2 block text-sm font-semibold text-slate-700">Brand Variants (comma-separated)</label>
+                            <input type="text" id="admin-brands" class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition" placeholder="e.g., Panadol, Uphamol">
+                        </div>
+                        <div>
+                            <label for="admin-form" class="mb-2 block text-sm font-semibold text-slate-700">Form</label>
+                            <select id="admin-form" required class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition">
+                                <option value="Tablet">Tablet</option>
+                                <option value="Capsule">Capsule</option>
+                                <option value="Syrup">Syrup</option>
+                                <option value="Injection">Injection</option>
+                                <option value="Cream">Cream</option>
+                                <option value="Drops">Drops</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="admin-shape" class="mb-2 block text-sm font-semibold text-slate-700">Shape</label>
+                            <select id="admin-shape" required class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition">
+                                <option value="Round">Round</option>
+                                <option value="Oval">Oval</option>
+                                <option value="Oval / Capsule-shaped">Oval / Capsule-shaped</option>
+                                <option value="Eight-sided">Eight-sided</option>
+                                <option value="Capsule">Capsule</option>
+                                <option value="Square">Square</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="admin-color" class="mb-2 block text-sm font-semibold text-slate-700">Color</label>
+                            <input type="text" id="admin-color" required class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition" placeholder="e.g., White, Yellow, Peach">
+                        </div>
+                        <div>
+                            <label for="admin-instruction" class="mb-2 block text-sm font-semibold text-slate-700">Default Instruction</label>
+                            <textarea id="admin-instruction" required rows="3" class="w-full rounded-lg border-2 border-slate-300 p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition" placeholder="e.g., Ambil 1-2 biji bila perlu"></textarea>
+                        </div>
+                         <div>
+                            <label for="admin-image" class="mb-2 block text-sm font-semibold text-slate-700">Pill Image (Optional)</label>
+                            <input type="file" id="admin-image" accept="image/*" class="w-full text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-green-100 file:px-4 file:py-2 file:font-bold file:text-green-700 hover:file:bg-green-200 transition">
+                            <p class="text-xs text-slate-500 mt-1">Leave empty to use default placeholder</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 rounded-lg bg-gradient-to-r from-green-600 to-green-700 px-6 py-3 font-bold text-white shadow-lg transition transform hover:scale-105 hover:shadow-xl focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                <i data-lucide="check" class="inline h-4 w-4 mr-2"></i>
+                                <span id="admin-submit-text">Save Medicine</span>
+                            </button>
+                            <button type="button" onclick="cancelEdit()" id="admin-cancel-btn" style="display: none;" class="rounded-lg bg-slate-400 hover:bg-slate-500 px-4 py-3 font-bold text-white shadow-lg transition">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                    </form>
+                </div>
+                
+                <!-- Medicine List -->
+                <div class="md:col-span-2 rounded-xl bg-white p-6 shadow-md border border-slate-200">
+                     <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="list" class="h-6 w-6 text-blue-600"></i>
+                        <h3 class="text-lg font-bold text-slate-800">Current Medicine List</h3>
+                     </div>
+                     <div id="admin-list-loader" class="text-center p-6" style="display: none;">
+                        <div class="h-10 w-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 animate-spin mx-auto"></div>
+                        <p class="mt-3 text-slate-600 font-medium">Loading list...</p>
+                     </div>
+                     <div id="admin-med-list" class="max-h-96 space-y-2 overflow-y-auto rounded-lg border-2 border-slate-300 p-4 bg-slate-50">
+                        <!-- Admin list will be injected here -->
+                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Chart Tab (Active by default) -->
+        <div id="chart-tab">
+        <!-- Step 1: Patient & Search -->
+        <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <!-- Patient Details -->
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm card-elevated hover:shadow-md">
+                <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="user" class="h-5 w-5 text-blue-600"></i>
+                    <label for="patient-name" class="font-semibold text-slate-700">Patient Name</label>
+                </div>
+                <input type="text" id="patient-name" oninput="updatePatientName()" class="w-full rounded-lg border border-slate-300 p-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Ahmad bin Ismail">
+            </div>
+
+            <!-- ID Details -->
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm card-elevated hover:shadow-md">
+                <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="id-card" class="h-5 w-5 text-blue-600"></i>
+                    <label for="patient-id" class="font-semibold text-slate-700">IC / ID No.</label>
+                </div>
+                <input type="text" id="patient-id" oninput="updatePatientId()" class="w-full rounded-lg border border-slate-300 p-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., 801010-10-5555">
+            </div>
+
+            <!-- Search -->
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm card-elevated hover:shadow-md">
+                <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="pill" class="h-5 w-5 text-blue-600"></i>
+                    <label for="med-select" class="font-semibold text-slate-700">Select Medicine</label>
+                </div>
+                <select id="med-select" onchange="handleSelectMedicine(this.value)" class="w-full rounded-lg border border-slate-300 p-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                    <option value="" disabled selected>-- Select a medicine --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Step 2: Chart Preview & Generation -->
+        <div class="mb-6 flex justify-end">
+            <button id="generate-pdf-btn" onclick="generatePDF()" class="flex items-center gap-2 rounded-lg bg-gradient-blue text-white px-8 py-4 text-lg font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <i data-lucide="file-pdf" class="lucide-icon h-5 w-5"></i>
+                Generate PDF Chart
+            </button>
+        </div>
+
+        <!-- PDF-able Content Area -->
+        <div id="pdf-content" class="rounded-xl border-2 border-slate-300 bg-white shadow-xl overflow-hidden card-elevated">
+            <!-- PDF Header -->
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 border-b border-slate-300">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-blue-900">UBAT SAYA</h2>
+                        <p class="text-xs text-blue-700">Negeri Sembilan Health System</p>
+                    </div>
+                    <div class="text-right text-sm">
+                        <div class="font-semibold text-slate-700">
+                            <span class="text-xs text-slate-600 block">Patient:</span>
+                            <span id="patient-name-preview" class="font-bold text-slate-900">—</span>
+                        </div>
+                        <div class="font-semibold text-slate-700 mt-1">
+                            <span class="text-xs text-slate-600 block">ID:</span>
+                            <span id="patient-id-preview" class="font-bold text-slate-900">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF Table Header (Time Slots) -->
+            <div class="grid grid-cols-9 border-b-2 border-slate-300 bg-gradient-to-r from-slate-50 to-slate-100">
+                <!-- Col 1-4: Medicine Info -->
+                <div class="col-span-4 p-2 border-r border-slate-300">
+                    <span class="text-xs font-bold text-slate-600">Medicine</span>
+                </div>
+                <!-- Col 5: Pagi -->
+                <div class="col-span-1 flex flex-col items-center justify-center bg-blue-50 p-2 text-center border-l border-slate-200">
+                    <i data-lucide="sunrise" class="lucide-icon text-blue-600 h-4 w-4 mb-0.5"></i>
+                    <span class="text-xs font-bold text-blue-900">PAGI</span>
+                    <span class="text-xs text-blue-700">8:00 AM</span>
+                </div>
+                <!-- Col 6: Tengah Hari -->
+                <div class="col-span-1 flex flex-col items-center justify-center bg-yellow-50 p-2 text-center border-l border-slate-200">
+                    <i data-lucide="sun" class="lucide-icon text-yellow-600 h-4 w-4 mb-0.5"></i>
+                    <span class="text-xs font-bold text-yellow-900">SIANG</span>
+                    <span class="text-xs text-yellow-700">1:00 PM</span>
+                </div>
+                <!-- Col 7: Petang -->
+                <div class="col-span-1 flex flex-col items-center justify-center bg-orange-50 p-2 text-center border-l border-slate-200">
+                    <i data-lucide="sunset" class="lucide-icon text-orange-600 h-4 w-4 mb-0.5"></i>
+                    <span class="text-xs font-bold text-orange-900">PETANG</span>
+                    <span class="text-xs text-orange-700">6:00 PM</span>
+                </div>
+                <!-- Col 8: Malam -->
+                <div class="col-span-1 flex flex-col items-center justify-center bg-indigo-50 p-2 text-center border-l border-slate-200">
+                    <i data-lucide="moon" class="lucide-icon text-indigo-600 h-4 w-4 mb-0.5"></i>
+                    <span class="text-xs font-bold text-indigo-900">MALAM</span>
+                    <span class="text-xs text-indigo-700">10:00 PM</span>
+                </div>
+                <!-- Col 9: Jika Perlu -->
+                <div class="col-span-1 flex flex-col items-center justify-center bg-red-50 p-2 text-center border-l border-slate-200">
+                    <i data-lucide="alert-circle" class="lucide-icon text-red-600 h-4 w-4 mb-0.5"></i>
+                    <span class="text-xs font-bold text-red-900">JIKA PERLU</span>
+                    <span class="text-xs text-red-700">As Needed</span>
+                </div>
+            </div>
+
+            <!-- Medicine Rows Container -->
+            <div id="medicine-rows-container">
+                <!-- Rows will be injected here -->
+                <div id="empty-state" class="p-10 text-center text-slate-500">
+                    <i data-lucide="search" class="lucide-icon mx-auto mb-2"></i>
+                    Search for a medicine to add it to the chart.
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- PDF History Tab -->
+        <div id="history-tab" class="hidden">
+            <div class="mb-6 rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-xl card-elevated">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="history" class="h-6 w-6 text-blue-600"></i>
+                        <h2 class="text-2xl font-bold text-slate-800">Generated PDF History</h2>
+                    </div>
+                </div>
+                <div id="pdf-history-list" class="space-y-2 max-h-96 overflow-y-auto rounded-lg border border-slate-200 p-4 bg-slate-50">
+                    <p class="text-slate-500 text-center py-8">No PDFs generated yet</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm" style="display: none;">
+        <div class="flex flex-col items-center rounded-2xl bg-white p-8 shadow-2xl card-elevated transform transition animate-pulse-glow">
+            <div class="relative">
+                <div class="h-16 w-16 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 animate-spin" style="clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%);"></div>
+                <div class="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-blue-200"></div>
+            </div>
+            <span class="mt-6 text-lg font-bold text-slate-800">Generating PDF...</span>
+            <span class="mt-2 text-sm text-slate-500">Please wait while we create your medicine chart</span>
+        </div>
+    </div>
+
+    <!-- Custom Message Modal -->
+    <div id="message-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm" style="display: none;">
+        <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl card-elevated transform transition">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                    <i data-lucide="info" class="h-6 w-6 text-white"></i>
+                </div>
+                <h3 id="message-title" class="text-xl font-bold text-slate-800">Notice</h3>
+            </div>
+            <p id="message-body" class="text-slate-600 leading-relaxed mb-6">This is a message.</p>
+            <button onclick="hideMessage()" class="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-semibold text-white shadow-lg transition transform hover:scale-105 hover:shadow-xl focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                OK
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // === API CONFIGURATION ===
+        // Change this to your Render.com API URL after deployment
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'  // Local development
+            : 'https://YOUR-API-NAME.onrender.com';  // Production - UPDATE THIS!
+        
+        console.log(`🔗 API URL: ${API_URL}`);
+        
+        // === ENHANCED DATABASE & APP STATE ===
+        let db;
+        let selectedMedicines = [];
+        let currentChartId = null; // Track current chart being edited
+        let isDataModified = false; // Track if changes need saving
+        
+        // Base64 SVG placeholders to avoid "tainted canvas"
+        const placeholderImages = {
+            "white-oval": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+            "white-round": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+            "white-eight-sided": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSI4LjUsMiAxNS41LDQgMjEsMTEgMTkuNSwxOC41IDEyLDIyIDQuNSwxOC41IDMsMTEgNi41LDQiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+            "yellow-oval": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2ZlZjljNyIgc3Ryb2tlPSIjZWRjYTQ5Ii8+PC9zdmc+",
+            "peach-round": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmZmVkZDEiIHN0cm9rZT0iI2ZmY2FhMSIvPjwvc3ZnPg=="
+        };
+
+        // Load initial medicines from external JSON file or API
+        let initialMedicines = [];
+        
+        // Function to load medicines from API (Render.com) or local file
+        async function loadMedicinesFromFile() {
+            try {
+                // Try API first (Render.com backend)
+                const response = await fetch(`${API_URL}/api/medicines`);
+                
+                if (!response.ok) {
+                    throw new Error(`API returned ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                const medicines = result.data || result; // Handle both formats
+                
+                // Convert brand_variants arrays to JSON strings for database storage
+                initialMedicines = medicines.map(med => ({
+                    ...med,
+                    brand_variants: typeof med.brand_variants === 'string' 
+                        ? med.brand_variants 
+                        : JSON.stringify(med.brand_variants || [])
+                }));
+                
+                console.log(`✓ Loaded ${initialMedicines.length} medicines from API`);
+                return initialMedicines;
+            } catch (error) {
+                console.error('Error loading medicines from API:', error);
+                
+                // Fallback: Try local medicines.json file
+                console.warn('⚠️ Falling back to local medicines.json file...');
+                try {
+                    const fallbackResponse = await fetch('medicines.json');
+                    if (!fallbackResponse.ok) {
+                        throw new Error('Failed to load local medicines.json');
+                    }
+                    const medicines = await fallbackResponse.json();
+                    
+                    initialMedicines = medicines.map(med => ({
+                        ...med,
+                        brand_variants: typeof med.brand_variants === 'string' 
+                            ? med.brand_variants 
+                            : JSON.stringify(med.brand_variants || [])
+                    }));
+                    
+                    console.log(`✓ Loaded ${initialMedicines.length} medicines from local file`);
+                    return initialMedicines;
+                } catch (fallbackError) {
+                    console.error('Error loading from local file:', fallbackError);
+                    showMessage("Error Loading Medicines", "Could not load medicines from API or local file. Using empty database.");
+                    return [];
+                }
+            }
+        }
+
+        // === PROMISIFIED IDB HELPERS ===
+        function promisifyRequest(request) {
+            return new Promise((resolve, reject) => {
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // === ENHANCED DATABASE INITIALIZATION ===
+        window.onload = () => {
+            initDB();
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            // Warn before leaving if data modified
+            window.addEventListener('beforeunload', (e) => {
+                if (isDataModified && selectedMedicines.length > 0) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        };
+
+        // === TAB SWITCHING ===
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.getElementById('chart-tab').classList.add('hidden');
+            document.getElementById('history-tab').classList.add('hidden');
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Update button states
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Load history when switching to history tab
+            if (tabName === 'history') {
+                loadPDFHistory();
+            }
+            
+            // Render icons
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        async function initDB() {
+            const dbOpenRequest = indexedDB.open("UbatSayaDB", 2); // Version 2 for enhanced schema
+
+            dbOpenRequest.onupgradeneeded = (event) => {
+                let dbInstance = event.target.result;
+                
+                // Store 1: Medicines
+                if (!dbInstance.objectStoreNames.contains("medicines")) {
+                    const medicinesStore = dbInstance.createObjectStore("medicines", { keyPath: "code" });
+                    medicinesStore.createIndex("generic_name", "generic_name", { unique: false });
+                    medicinesStore.createIndex("brand_variants", "brand_variants", { unique: false });
+                }
+                
+                // Store 2: Saved Charts (User medicine schedules)
+                if (!dbInstance.objectStoreNames.contains("charts")) {
+                    const chartsStore = dbInstance.createObjectStore("charts", { keyPath: "chartId", autoIncrement: true });
+                    chartsStore.createIndex("patientName", "patientName", { unique: false });
+                    chartsStore.createIndex("createdDate", "createdDate", { unique: false });
+                }
+                
+                // Store 3: App Settings/Preferences
+                if (!dbInstance.objectStoreNames.contains("settings")) {
+                    dbInstance.createObjectStore("settings", { keyPath: "key" });
+                }
+            };
+
+            dbOpenRequest.onsuccess = async (event) => {
+                db = event.target.result;
+                console.log("✓ Database initialized (v2) - Medicines, Charts, Settings");
+                await populateInitialData();
+                await populateMedicineDropdown();
+                await loadLastChart(); // Auto-load last saved chart
+            };
+
+            dbOpenRequest.onerror = (event) => {
+                console.error("Database error: ", event.target.error);
+                showMessage("Database Error", "Could not initialize the local database. Some features may not work.");
+            };
+        }
+
+        // Load the last saved chart automatically
+        async function loadLastChart() {
+            if (!db) return;
+            try {
+                const transaction = db.transaction("charts", "readonly");
+                const chartsStore = transaction.objectStore("charts");
+                const index = chartsStore.index("createdDate");
+                const allCharts = await promisifyRequest(index.getAll());
+                
+                if (allCharts.length > 0) {
+                    const lastChart = allCharts[allCharts.length - 1];
+                    // Optionally auto-load: uncomment below
+                    // await restoreChart(lastChart.chartId);
+                }
+            } catch (error) {
+                console.warn("Could not load last chart: ", error);
+            }
+        }
+
+        async function populateInitialData() {
+            if (!db) return;
+            try {
+                const transaction = db.transaction("medicines", "readwrite");
+                const objectStore = transaction.objectStore("medicines");
+                const countRequest = objectStore.count();
+                const count = await promisifyRequest(countRequest);
+
+                if (count === 0) {
+                    console.log("Database empty. Loading medicines from JSON file...");
+                    
+                    // Load medicines from external JSON file
+                    const medicines = await loadMedicinesFromFile();
+                    
+                    if (medicines.length === 0) {
+                        console.error("No medicines loaded from JSON file!");
+                        showMessage("Error", "Failed to load medicine database. Please ensure medicines.json file is present.");
+                        return;
+                    }
+                    
+                    console.log(`Populating ${medicines.length} medicines into database...`);
+                    for (const med of medicines) {
+                        await promisifyRequest(objectStore.add(med));
+                    }
+                    console.log("✓ Initial data populated successfully from medicines.json");
+                } else {
+                    console.log(`Database already populated with ${count} medicines.`);
+                }
+            } catch (error) {
+                console.error("Error populating data: ", error);
+                showMessage("Database Error", `Failed to populate medicines: ${error.message}`);
+            }
+        }
+
+        // --- SEARCH & AUTOCOMPLETE ---
+        
+        // DELETED handleSearch() and displaySearchResults() as they are no longer needed.
+
+        async function populateMedicineDropdown() {
+            if (!db) return;
+            const select = document.getElementById('med-select');
+            // Clear existing options except the first placeholder
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+
+            try {
+                const medicines = await getAllMedicines();
+                medicines.sort((a, b) => a.generic_name.localeCompare(b.generic_name));
+                
+                for (const med of medicines) {
+                    const option = document.createElement('option');
+                    option.value = med.code;
+                    option.textContent = `${med.generic_name} (${med.code})`;
+                    select.appendChild(option);
+                }
+            } catch (error) {
+                console.error("Error populating medicine dropdown: ", error);
+            }
+        }
+        
+        async function getAllMedicines() {
+             if (!db) return [];
+             const transaction = db.transaction("medicines", "readonly");
+             const objectStore = transaction.objectStore("medicines");
+             return await promisifyRequest(objectStore.getAll());
+        }
+
+        // DELETED displaySearchResults()
+        
+        // --- CHART MANAGEMENT ---
+        
+        function handleSelectMedicine(code) {
+            if (!code) return;
+            addMedicineToChart(code);
+            // Reset dropdown to placeholder
+            document.getElementById('med-select').selectedIndex = 0;
+        }
+
+        async function addMedicineToChart(code) {
+            // Check if already added
+            if (selectedMedicines.some(med => med.code === code)) {
+                showMessage("Already Added", "This medicine is already in the chart.");
+                return;
+            }
+
+            // Get full medicine details
+            try {
+                const transaction = db.transaction("medicines", "readonly");
+                const objectStore = transaction.objectStore("medicines");
+                const med = await promisifyRequest(objectStore.get(code));
+
+                if (med) {
+                    const chartMed = {
+                        ...med,
+                        chartId: Date.now().toString(), // Unique ID for this instance in the chart
+                        dosage: { pagi: false, tengah_hari: false, petang: false, malam: false, jika_perlu: false }
+                    };
+                    selectedMedicines.push(chartMed);
+                    renderChart();
+                }
+            } catch (error) {
+                console.error("Error adding medicine: ", error);
+            }
+            
+            // Clear search (No longer needed)
+        }
+
+        function renderChart() {
+            const container = document.getElementById("medicine-rows-container");
+            
+            if (selectedMedicines.length === 0) {
+                // Restore the empty state
+                container.innerHTML = `
+                <div id="empty-state" class="p-10 text-center text-slate-500">
+                    <i data-lucide="search" class="lucide-icon mx-auto mb-2"></i>
+                    Search for a medicine to add it to the chart.
+                </div>`;
+                // Render the icon
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+                return;
+            }
+
+            // We have medicines, so build the rows
+            container.innerHTML = selectedMedicines.map((med, index) => `
+                <div id="row-${med.chartId}" class="grid grid-cols-9 border-t border-slate-300 transition hover:bg-blue-50/30 ${index % 2 === 0 ? 'bg-slate-50/30' : 'bg-white'}">
+                    <!-- Medicine Info -->
+                    <div class="col-span-4 flex items-center gap-3 p-2 border-r border-slate-200">
+                        <img src="${med.image}" alt="${med.generic_name}" class="h-16 w-16 flex-shrink-0 rounded-lg border-2 border-slate-300 bg-white p-1.5 object-contain shadow-md">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-bold text-slate-900 text-sm leading-tight">${med.generic_name}</h4>
+                            <p class="text-xs text-slate-600 mt-0.5 line-clamp-2">${med.instruction}</p>
+                            <button onclick="removeMedicine('${med.chartId}')" class="mt-1 text-xs font-bold text-red-600 hover:text-red-800 transition">
+                                <i data-lucide="x" class="inline h-3 w-3"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Dosages -->
+                    ${Object.keys(med.dosage).map(time => {
+                        const timeColors = {
+                            'pagi': 'bg-blue-50/50 hover:bg-blue-100/50',
+                            'tengah_hari': 'bg-yellow-50/50 hover:bg-yellow-100/50',
+                            'petang': 'bg-orange-50/50 hover:bg-orange-100/50',
+                            'malam': 'bg-indigo-50/50 hover:bg-indigo-100/50',
+                            'jika_perlu': 'bg-red-50/50 hover:bg-red-100/50'
+                        };
+                        return `
+                        <div class="col-span-1 flex items-center justify-center border-l border-slate-200 ${timeColors[time] || ''} transition p-2">
+                            <input type="checkbox" ${med.dosage[time] ? 'checked' : ''} onchange="updateDosage('${med.chartId}', '${time}', this.checked)"
+                                   class="h-4 w-4 rounded border border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        </div>
+                    `;
+                    }).join("")}
+                </div>
+            `).join("");
+        }
+
+        function updateDosage(chartId, time, isChecked) {
+            const med = selectedMedicines.find(m => m.chartId === chartId);
+            if (med) {
+                med.dosage[time] = isChecked;
+                isDataModified = true;
+            }
+        }
+        
+        function removeMedicine(chartId) {
+            selectedMedicines = selectedMedicines.filter(m => m.chartId !== chartId);
+            isDataModified = true;
+            renderChart();
+        }
+        
+        // === CHART PERSISTENCE FUNCTIONS ===
+        async function saveChart() {
+            if (!db || selectedMedicines.length === 0) {
+                showMessage("No Data", "Please add at least one medicine before saving.");
+                return;
+            }
+            
+            const patientName = document.getElementById("patient-name").value.trim();
+            const patientId = document.getElementById("patient-id").value.trim();
+            
+            if (!patientName) {
+                showMessage("Missing Info", "Please enter patient name.");
+                return;
+            }
+            
+            try {
+                const chartData = {
+                    patientName: patientName,
+                    patientId: patientId,
+                    medicines: selectedMedicines,
+                    createdDate: new Date().toISOString(),
+                    notes: ""
+                };
+                
+                const transaction = db.transaction("charts", "readwrite");
+                const chartsStore = transaction.objectStore("charts");
+                const result = await promisifyRequest(chartsStore.add(chartData));
+                
+                currentChartId = result;
+                isDataModified = false;
+                showMessage("✓ Saved", `Chart saved for ${patientName}`);
+                console.log("Chart saved with ID:", result);
+            } catch (error) {
+                console.error("Error saving chart: ", error);
+                showMessage("Error", "Could not save the chart.");
+            }
+        }
+        
+        async function restoreChart(chartId) {
+            if (!db) return;
+            try {
+                const transaction = db.transaction("charts", "readonly");
+                const chartsStore = transaction.objectStore("charts");
+                const chartData = await promisifyRequest(chartsStore.get(chartId));
+                
+                if (chartData) {
+                    document.getElementById("patient-name").value = chartData.patientName;
+                    document.getElementById("patient-id").value = chartData.patientId;
+                    selectedMedicines = chartData.medicines;
+                    currentChartId = chartId;
+                    isDataModified = false;
+                    renderChart();
+                    updatePatientName();
+                    updatePatientId();
+                    showMessage("✓ Loaded", `Chart for ${chartData.patientName} loaded`);
+                }
+            } catch (error) {
+                console.error("Error restoring chart: ", error);
+                showMessage("Error", "Could not load the chart.");
+            }
+        }
+        
+        async function deleteChart(chartId) {
+            if (!db) return;
+            try {
+                const transaction = db.transaction("charts", "readwrite");
+                const chartsStore = transaction.objectStore("charts");
+                await promisifyRequest(chartsStore.delete(chartId));
+                
+                if (currentChartId === chartId) {
+                    clearChart();
+                }
+                await loadSavedCharts();
+                showMessage("✓ Deleted", "Chart has been deleted.");
+            } catch (error) {
+                console.error("Error deleting chart: ", error);
+                showMessage("Error", "Could not delete the chart.");
+            }
+        }
+        
+        function clearChart() {
+            selectedMedicines = [];
+            currentChartId = null;
+            document.getElementById("patient-name").value = "";
+            document.getElementById("patient-id").value = "";
+            renderChart();
+            updatePatientName();
+            updatePatientId();
+            isDataModified = false;
+        }
+        
+        async function loadSavedCharts() {
+            if (!db) return [];
+            try {
+                const transaction = db.transaction("charts", "readonly");
+                const chartsStore = transaction.objectStore("charts");
+                return await promisifyRequest(chartsStore.getAll());
+            } catch (error) {
+                console.error("Error loading charts: ", error);
+                return [];
+            }
+        }
+        
+        async function exportChartAsJSON() {
+            if (selectedMedicines.length === 0) {
+                showMessage("No Data", "Please create a chart first.");
+                return;
+            }
+            
+            const chartData = {
+                patientName: document.getElementById("patient-name").value,
+                patientId: document.getElementById("patient-id").value,
+                medicines: selectedMedicines,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(chartData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `Chart_${chartData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        async function importChartFromJSON(file) {
+            try {
+                const text = await file.text();
+                const chartData = JSON.parse(text);
+                
+                if (!chartData.patientName || !chartData.medicines) {
+                    showMessage("Invalid File", "The file doesn't contain valid chart data.");
+                    return;
+                }
+                
+                document.getElementById("patient-name").value = chartData.patientName;
+                document.getElementById("patient-id").value = chartData.patientId || "";
+                selectedMedicines = chartData.medicines;
+                renderChart();
+                updatePatientName();
+                updatePatientId();
+                showMessage("✓ Imported", "Chart imported successfully.");
+            } catch (error) {
+                console.error("Error importing chart: ", error);
+                showMessage("Error", "Could not import the chart file.");
+            }
+        }
+        
+        function handleLoadChart(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                importChartFromJSON(files[0]);
+            }
+            event.target.value = "";
+        }
+        
+        function handleImportChart(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                importChartFromJSON(files[0]);
+            }
+            event.target.value = "";
+        }
+
+        // --- UI & PDF ---
+        function updatePatientName() {
+            document.getElementById("patient-name-preview").textContent = document.getElementById("patient-name").value;
+            isDataModified = true;
+        }
+
+        function updatePatientId() {
+            document.getElementById("patient-id-preview").textContent = document.getElementById("patient-id").value;
+            isDataModified = true;
+        }
+
+        function generatePDF() {
+            const patientName = document.getElementById("patient-name").value;
+            if (!patientName) {
+                showMessage("Missing Information", "Please enter a patient name before generating the PDF.");
+                return;
+            }
+            
+            const btn = document.getElementById("generate-pdf-btn");
+            const loadingModal = document.getElementById("loading-modal");
+            loadingModal.style.display = "flex";
+            btn.disabled = true;
+
+            const element = document.getElementById("pdf-content");
+            
+            // Get the original checkboxes' state ONCE
+            const originalCheckboxes = element.querySelectorAll('input[type="checkbox"]');
+            
+            const fileName = `Ubat_Saya_${patientName.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+
+            const opt = {
+                margin:       [0.3, 0.3, 0.3, 0.3],
+                filename:     fileName,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { 
+                    scale: 2,
+                    logging: true,
+                    letterRendering: true,
+                    useCORS: true,
+                    allowTaint: true,
+                    onclone: (clonedDoc) => {
+                        // Modify cloned document for horizontal fit
+                        const clonedElement = clonedDoc.getElementById("pdf-content");
+                        if (clonedElement) {
+                            clonedElement.style.overflow = "visible";
+                            clonedElement.style.height = "auto";
+                            clonedElement.style.width = "auto";
+                        }
+                        
+                        const clonedRowsContainer = clonedDoc.getElementById("medicine-rows-container");
+                        if (clonedRowsContainer) {
+                            clonedRowsContainer.style.overflow = "visible";
+                            clonedRowsContainer.style.height = "auto";
+                        }
+                        
+                        // Sync checkboxes
+                        const clonedCheckboxes = clonedDoc.querySelectorAll('input[type="checkbox"]');
+                        originalCheckboxes.forEach((originalCb, index) => {
+                            if (clonedCheckboxes[index]) {
+                                if (originalCb.checked) {
+                                    clonedCheckboxes[index].setAttribute('checked', 'checked');
+                                    clonedCheckboxes[index].checked = true;
+                                } else {
+                                    clonedCheckboxes[index].removeAttribute('checked');
+                                    clonedCheckboxes[index].checked = false;
+                                }
+                            }
+                        });
+                        
+                        // CRITICAL: Keep pill images at proper size
+                        const allImages = clonedDoc.querySelectorAll('#medicine-rows-container img');
+                        allImages.forEach(img => {
+                            img.style.cssText = 'height: 64px; width: 64px; min-height: 64px; min-width: 64px; max-height: 64px; max-width: 64px; flex-shrink: 0; object-fit: contain; display: block;';
+                        });
+                        
+                        // Adjust table for landscape
+                        const rows = clonedDoc.querySelectorAll('.grid.grid-cols-9');
+                        rows.forEach(row => {
+                            row.style.fontSize = '0.75rem';
+                        });
+                    }
+                },
+                jsPDF:        { 
+                    unit: 'in', 
+                    format: 'a4', 
+                    orientation: 'landscape'
+                }
+            };
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                loadingModal.style.display = "none";
+                btn.disabled = false;
+                
+                // Save PDF record to history
+                const patientId = document.getElementById("patient-id").value;
+                savePDFRecord(patientName, patientId, fileName);
+                
+                showMessage("✓ PDF Generated", `${fileName} downloaded successfully`);
+            }).catch(err => {
+                console.error("PDF generation error: ", err);
+                loadingModal.style.display = "none";
+                btn.disabled = false;
+                showMessage("Error", "There was a problem generating the PDF.");
+            });
+        }
+        
+        // --- MODAL CONTROLS ---
+        function showMessage(title, body) {
+            document.getElementById("message-title").textContent = title;
+            document.getElementById("message-body").textContent = body;
+            document.getElementById("message-modal").style.display = "flex";
+        }
+
+        function hideMessage() {
+            document.getElementById("message-modal").style.display = "none";
+        }
+
+        // --- ADMIN PANEL FUNCTIONS ---
+        
+        function toggleAdminPanel() {
+            const panel = document.getElementById("admin-panel");
+            const isOpen = panel.style.display === "block";
+            if (isOpen) {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+                loadAdminMedicineList();
+                // Re-render icons in the admin panel
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        async function loadAdminMedicineList() {
+            if (!db) return;
+            const listContainer = document.getElementById("admin-med-list");
+            const loader = document.getElementById("admin-list-loader");
+            listContainer.innerHTML = "";
+            loader.style.display = "block";
+
+            try {
+                const medicines = await getAllMedicines();
+                medicines.sort((a, b) => a.generic_name.localeCompare(b.generic_name));
+                
+                if (medicines.length === 0) {
+                     listContainer.innerHTML = `<p class="text-slate-500 text-center">No medicines in the database.</p>`;
+                } else {
+                    listContainer.innerHTML = medicines.map((med, idx) => {
+                        const brandList = typeof med.brand_variants === 'string' ? JSON.parse(med.brand_variants) : med.brand_variants;
+                        return `
+                        <div class="flex items-center justify-between rounded-md border border-slate-200 p-3 hover:bg-slate-100 transition bg-white">
+                            <div class="flex items-center gap-3 flex-1">
+                                <img src="${med.image}" alt="${med.generic_name}" class="h-12 w-12 flex-shrink-0 rounded-md border-2 border-slate-300 bg-white p-1 object-contain shadow-sm">
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-800">${med.generic_name}</div>
+                                    <div class="text-xs text-slate-600 mt-0.5">Code: <span class="font-mono font-bold">${med.code}</span></div>
+                                    <div class="text-xs text-slate-500 mt-0.5">
+                                        <span class="font-semibold">Form:</span> ${med.form || 'Tablet'} | 
+                                        <span class="font-semibold">Shape:</span> ${med.shape || 'Round'} | 
+                                        <span class="font-semibold">Color:</span> ${med.color || 'White'}
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-0.5">Brands: ${brandList.join(', ') || 'N/A'}</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 flex-shrink-0">
+                                <button class="edit-med-btn rounded-lg px-3 py-2 text-blue-600 hover:bg-blue-100 hover:text-blue-800 transition font-semibold flex items-center gap-1" type="button" data-med-code="${med.code}" title="Edit ${med.generic_name}">
+                                    <i data-lucide="edit-2" class="h-4 w-4"></i>
+                                    <span class="text-xs">Edit</span>
+                                </button>
+                                <button class="delete-med-btn rounded-lg px-3 py-2 text-red-600 hover:bg-red-100 hover:text-red-800 transition font-semibold flex items-center gap-1" type="button" data-med-code="${med.code}" data-med-name="${med.generic_name}" title="Delete ${med.generic_name}">
+                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
+                                    <span class="text-xs">Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                    }).join("");
+                    
+                    // Add event listeners to edit and delete buttons
+                    setTimeout(() => {
+                        document.querySelectorAll('.edit-med-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const code = this.getAttribute('data-med-code');
+                                editMedicine(code);
+                            });
+                        });
+                        
+                        document.querySelectorAll('.delete-med-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const code = this.getAttribute('data-med-code');
+                                const name = this.getAttribute('data-med-name');
+                                if (confirm(`Are you sure you want to delete "${name}"?\n\nThis will remove it from the database but not from the medicines.json file until you export.`)) {
+                                    adminDeleteMedicine(code);
+                                }
+                            });
+                        });
+                        
+                        // Re-render icons in the new list items
+                        if (window.lucide) {
+                            lucide.createIcons();
+                        }
+                    }, 100);
+                }
+            } catch (error) {
+                console.error("Error loading admin list: ", error);
+                listContainer.innerHTML = `<p class="text-red-500 text-center">Could not load medicine list.</p>`;
+            } finally {
+                loader.style.display = "none";
+            }
+        }
+
+        async function handleAdminFormSubmit(event) {
+            event.preventDefault();
+            
+            const code = document.getElementById('admin-code').value.trim().toUpperCase();
+            const editMode = document.getElementById('admin-edit-mode').value;
+            
+            if (!code) {
+                showMessage("Input Error", "Medicine Code is required.");
+                return;
+            }
+
+            // --- Image Handling ---
+            let newMedImage = null;
+            const file = document.getElementById('admin-image').files[0];
+            
+            if (file) {
+                try {
+                    newMedImage = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = (error) => reject(error);
+                        reader.readAsDataURL(file);
+                    });
+                } catch (err) {
+                    console.error("Error reading file: ", err);
+                    showMessage("File Error", "Could not read the image file. Using default placeholder.");
+                }
+            }
+            
+            // If editing and no new image, keep existing image
+            if (editMode && !newMedImage) {
+                const transaction = db.transaction("medicines", "readonly");
+                const objectStore = transaction.objectStore("medicines");
+                const existing = await promisifyRequest(objectStore.get(code));
+                if (existing) {
+                    newMedImage = existing.image;
+                }
+            }
+            
+            // If still no image, use placeholder
+            if (!newMedImage) {
+                const shape = document.getElementById('admin-shape').value;
+                const color = document.getElementById('admin-color').value.toLowerCase();
+                
+                // Select placeholder based on shape and color
+                if (shape === "Round" && color.includes("white")) {
+                    newMedImage = placeholderImages["white-round"];
+                } else if (shape === "Oval" && color.includes("yellow")) {
+                    newMedImage = placeholderImages["yellow-oval"];
+                } else if (shape === "Oval" && (color.includes("peach") || color.includes("pink"))) {
+                    newMedImage = placeholderImages["peach-round"];
+                } else if (shape === "Eight-sided") {
+                    newMedImage = placeholderImages["white-eight-sided"];
+                } else if ((shape === "Oval" || shape === "Oval / Capsule-shaped") && color.includes("white")) {
+                    newMedImage = placeholderImages["white-oval"];
+                } else {
+                    newMedImage = placeholderImages["white-round"];
+                }
+            }
+            // --- End Image Handling ---
+
+            const newMed = {
+                code: code,
+                generic_name: document.getElementById('admin-name').value.trim(),
+                brand_variants: JSON.stringify(document.getElementById('admin-brands').value.split(',').map(s => s.trim()).filter(s => s)),
+                form: document.getElementById('admin-form').value,
+                shape: document.getElementById('admin-shape').value,
+                color: document.getElementById('admin-color').value.trim(),
+                instruction: document.getElementById('admin-instruction').value.trim(),
+                image: newMedImage
+            };
+
+            if (!newMed.generic_name || !newMed.instruction) {
+                 showMessage("Input Error", "Generic Name and Instruction are required.");
+                return;
+            }
+
+            try {
+                // Save to IndexedDB first
+                const transaction = db.transaction("medicines", "readwrite");
+                const objectStore = transaction.objectStore("medicines");
+                await promisifyRequest(objectStore.put(newMed));
+                
+                // Then sync to API (Render.com backend)
+                await syncMedicineToAPI(newMed, editMode);
+                
+                const action = editMode ? "updated" : "added";
+                showMessage("Success", `Medicine "${newMed.generic_name}" has been ${action} and synced to server.`);
+                document.getElementById("admin-add-form").reset();
+                document.getElementById('admin-edit-mode').value = '';
+                document.getElementById('admin-code').readOnly = false;
+                document.getElementById('admin-submit-text').textContent = 'Save Medicine';
+                document.getElementById('admin-cancel-btn').style.display = 'none';
+                
+                loadAdminMedicineList();
+                await populateMedicineDropdown();
+            } catch (error) {
+                console.error("Error saving medicine: ", error);
+                showMessage("Database Error", "Could not save the medicine. " + error.message);
+            }
+        }
+        
+        // Sync single medicine to API
+        async function syncMedicineToAPI(medicine, isUpdate = false) {
+            try {
+                // Convert brand_variants back to array for API
+                const apiMedicine = {
+                    ...medicine,
+                    brand_variants: JSON.parse(medicine.brand_variants || '[]')
+                };
+                
+                const response = await fetch(`${API_URL}/api/medicines/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(apiMedicine)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API sync failed: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                console.log(`✓ Medicine ${medicine.code} synced to API:`, result.action);
+                return result;
+            } catch (error) {
+                console.error('Failed to sync to API:', error);
+                // Don't throw - allow offline operation
+                console.warn('⚠️ Medicine saved locally but not synced to server');
+            }
+        }
+        
+        function cancelEdit() {
+            document.getElementById("admin-add-form").reset();
+            document.getElementById('admin-edit-mode').value = '';
+            document.getElementById('admin-code').readOnly = false;
+            document.getElementById('admin-submit-text').textContent = 'Save Medicine';
+            document.getElementById('admin-cancel-btn').style.display = 'none';
+        }
+        
+        async function editMedicine(code) {
+            if (!db) return;
+            
+            try {
+                const transaction = db.transaction("medicines", "readonly");
+                const objectStore = transaction.objectStore("medicines");
+                const medicine = await promisifyRequest(objectStore.get(code));
+                
+                if (!medicine) {
+                    showMessage("Error", "Medicine not found.");
+                    return;
+                }
+                
+                // Populate form with existing data
+                document.getElementById('admin-code').value = medicine.code;
+                document.getElementById('admin-code').readOnly = true;
+                document.getElementById('admin-name').value = medicine.generic_name;
+                
+                // Parse brand variants
+                let brands = [];
+                try {
+                    brands = JSON.parse(medicine.brand_variants || '[]');
+                } catch (e) {
+                    brands = [];
+                }
+                document.getElementById('admin-brands').value = brands.join(', ');
+                
+                document.getElementById('admin-form').value = medicine.form || 'Tablet';
+                document.getElementById('admin-shape').value = medicine.shape || 'Round';
+                document.getElementById('admin-color').value = medicine.color || 'White';
+                document.getElementById('admin-instruction').value = medicine.instruction;
+                
+                // Set edit mode
+                document.getElementById('admin-edit-mode').value = code;
+                document.getElementById('admin-submit-text').textContent = 'Update Medicine';
+                document.getElementById('admin-cancel-btn').style.display = 'inline-block';
+                
+                // Scroll to form
+                document.getElementById('admin-add-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+            } catch (error) {
+                console.error("Error loading medicine for edit:", error);
+                showMessage("Error", "Could not load medicine data.");
+            }
+        }
+        
+        async function exportMedicinesToJSON() {
+            if (!db) return;
+            
+            try {
+                const transaction = db.transaction("medicines", "readonly");
+                const objectStore = transaction.objectStore("medicines");
+                const medicines = await promisifyRequest(objectStore.getAll());
+                
+                // Convert medicines to JSON format (parse brand_variants back to arrays)
+                const jsonData = medicines.map(med => ({
+                    code: med.code,
+                    generic_name: med.generic_name,
+                    brand_variants: JSON.parse(med.brand_variants || '[]'),
+                    form: med.form || 'Tablet',
+                    shape: med.shape || 'Round',
+                    color: med.color || 'White',
+                    image: med.image,
+                    instruction: med.instruction
+                }));
+                
+                // Create blob and download
+                const jsonString = JSON.stringify(jsonData, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'medicines.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showMessage("✓ Export Successful", `Exported ${medicines.length} medicines to medicines.json. This is a backup copy - changes are already saved to the server automatically!`);
+                
+            } catch (error) {
+                console.error("Error exporting medicines:", error);
+                showMessage("Export Error", "Could not export medicines to JSON.");
+            }
+        }
+
+        async function adminDeleteMedicine(code) {
+            if (!db) return;
+            
+            // Proceed with deletion
+            try {
+                // Delete from IndexedDB first
+                const transaction = db.transaction("medicines", "readwrite");
+                const objectStore = transaction.objectStore("medicines");
+                const deleteRequest = objectStore.delete(code);
+                
+                await new Promise((resolve, reject) => {
+                    deleteRequest.onsuccess = () => {
+                        console.log("Medicine deleted from IndexedDB:", code);
+                        resolve();
+                    };
+                    deleteRequest.onerror = () => {
+                        console.error("Delete error:", deleteRequest.error);
+                        reject(deleteRequest.error);
+                    };
+                });
+                
+                // Sync deletion to API
+                await deleteMedicineFromAPI(code);
+                
+                showMessage("✓ Deleted", `Medicine has been successfully deleted from database and server.`);
+                await loadAdminMedicineList(); // Refresh the list
+                await populateMedicineDropdown(); // Refresh dropdown
+            } catch (error) {
+                console.error("Error deleting medicine: ", error);
+                showMessage("Database Error", "Could not delete the medicine. Error: " + error.message);
+            }
+        }
+        
+        // Delete medicine from API
+        async function deleteMedicineFromAPI(code) {
+            try {
+                const response = await fetch(`${API_URL}/api/medicines/${code}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API delete failed: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                console.log(`✓ Medicine ${code} deleted from API`);
+                return result;
+            } catch (error) {
+                console.error('Failed to delete from API:', error);
+                console.warn('⚠️ Medicine deleted locally but not synced to server');
+            }
+        }
+
+        // === PDF HISTORY FUNCTIONS ===
+        async function savePDFRecord(patientName, patientId, fileName) {
+            if (!db) return;
+            try {
+                const pdfRecord = {
+                    patientName: patientName,
+                    patientId: patientId,
+                    fileName: fileName,
+                    generatedDate: new Date().toISOString(),
+                    medicines: selectedMedicines.map(m => m.generic_name).join(", ")
+                };
+                
+                const transaction = db.transaction("settings", "readwrite");
+                const settingsStore = transaction.objectStore("settings");
+                
+                // Get existing PDF history
+                let pdfHistory = [];
+                try {
+                    const historyRecord = await promisifyRequest(settingsStore.get("pdfHistory"));
+                    if (historyRecord) {
+                        pdfHistory = historyRecord.value || [];
+                    }
+                } catch (e) {
+                    pdfHistory = [];
+                }
+                
+                // Add new record (keep last 100)
+                pdfHistory.unshift(pdfRecord);
+                if (pdfHistory.length > 100) {
+                    pdfHistory.pop();
+                }
+                
+                await promisifyRequest(settingsStore.put({ key: "pdfHistory", value: pdfHistory }));
+                await loadPDFHistory();
+            } catch (error) {
+                console.error("Error saving PDF record: ", error);
+            }
+        }
+
+        async function loadPDFHistory() {
+            if (!db) return;
+            try {
+                const transaction = db.transaction("settings", "readonly");
+                const settingsStore = transaction.objectStore("settings");
+                const historyRecord = await promisifyRequest(settingsStore.get("pdfHistory"));
+                
+                const history = historyRecord ? historyRecord.value : [];
+                const historyContainer = document.getElementById("pdf-history-list");
+                
+                if (!historyContainer) return;
+                
+                if (history.length === 0) {
+                    historyContainer.innerHTML = '<p class="text-slate-500 text-center py-8">No PDFs generated yet</p>';
+                    return;
+                }
+                
+                historyContainer.innerHTML = history.map((record, index) => `
+                    <div class="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3 hover:bg-slate-50 transition">
+                        <div class="flex-grow">
+                            <div class="font-semibold text-slate-800">${record.patientName}</div>
+                            <div class="text-xs text-slate-500">ID: ${record.patientId || 'N/A'}</div>
+                            <div class="text-xs text-slate-500">Medicines: ${record.medicines.substring(0, 50)}${record.medicines.length > 50 ? '...' : ''}</div>
+                            <div class="text-xs text-slate-400 mt-1">${new Date(record.generatedDate).toLocaleString()}</div>
+                        </div>
+                        <div class="flex-shrink-0 ml-2 flex gap-2">
+                            <button onclick="reloadPatientFromHistory(${index})" class="rounded-lg bg-blue-600 text-white px-3 py-1 text-xs font-bold hover:bg-blue-700 transition">
+                                <i data-lucide="redo-2" class="inline h-3 w-3 mr-1"></i> Reload
+                            </button>
+                            <button onclick="deleteHistoryRecord(${index})" class="rounded-lg bg-red-600 text-white px-3 py-1 text-xs font-bold hover:bg-red-700 transition">
+                                <i data-lucide="trash-2" class="inline h-3 w-3 mr-1"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join("");
+                
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error("Error loading PDF history: ", error);
+            }
+        }
+
+        async function reloadPatientFromHistory(index) {
+            if (!db) return;
+            try {
+                const transaction = db.transaction("settings", "readonly");
+                const settingsStore = transaction.objectStore("settings");
+                const historyRecord = await promisifyRequest(settingsStore.get("pdfHistory"));
+                
+                const history = historyRecord ? historyRecord.value : [];
+                if (history[index]) {
+                    const record = history[index];
+                    document.getElementById("patient-name").value = record.patientName;
+                    document.getElementById("patient-id").value = record.patientId || "";
+                    
+                    // Optionally load the medicines (would need to store full medicine objects)
+                    updatePatientName();
+                    updatePatientId();
+                    showMessage("✓ Loaded", `Patient ${record.patientName} loaded from history`);
+                }
+            } catch (error) {
+                console.error("Error reloading history: ", error);
+            }
+        }
+
+        async function deleteHistoryRecord(index) {
+            if (!db) return;
+            
+            // Ask for confirmation
+            if (!confirm("Are you sure you want to delete this history record?")) {
+                return;
+            }
+            
+            try {
+                const transaction = db.transaction("settings", "readwrite");
+                const settingsStore = transaction.objectStore("settings");
+                const historyRecord = await promisifyRequest(settingsStore.get("pdfHistory"));
+                
+                let history = historyRecord ? historyRecord.value : [];
+                
+                if (index >= 0 && index < history.length) {
+                    history.splice(index, 1);
+                    await promisifyRequest(settingsStore.put({ key: "pdfHistory", value: history }));
+                    showMessage("✓ Deleted", "History record deleted successfully.");
+                    await loadPDFHistory(); // Refresh the history list
+                } else {
+                    showMessage("Error", "Invalid history record index.");
+                }
+            } catch (error) {
+                console.error("Error deleting history record: ", error);
+                showMessage("Database Error", "Could not delete the history record.");
+            }
+        }
+        
+    </script>
+</body>
+</html>

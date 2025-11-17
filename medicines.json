@@ -1,0 +1,302 @@
+[
+  {
+    "code": "GLI30MR",
+    "generic_name": "Gliclazide 30mg MR",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Oval / Capsule-shaped",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil sekali sehari dengan sarapan."
+  },
+  {
+    "code": "PERIN8",
+    "generic_name": "Perindopril Erbumine 8mg",
+    "brand_variants": ["Perinace", "Coversyl", "Aceon"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil sekali sehari, sebelum sarapan."
+  },
+  {
+    "code": "AMLO5",
+    "generic_name": "Amlodipine Besylate 5mg",
+    "brand_variants": ["Norvasc", "Covasc"],
+    "form": "Tablet",
+    "shape": "Eight-sided",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSI4LjUsMiAxNS41LDQgMjEsMTEgMTkuNSwxOC41IDEyLDIyIDQuNSwxOC41IDMsMTEgNi41LDQiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil sekali sehari, pada masa yang sama setiap hari."
+  },
+  {
+    "code": "ATORV20",
+    "generic_name": "Atorvastatin 20mg",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil sekali sehari, bila-bila masa, dengan atau tanpa makanan."
+  },
+  {
+    "code": "PANTO40",
+    "generic_name": "Pantoprazole 40mg",
+    "brand_variants": ["Vencid", "Protonix", "Nolpaza"],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "Yellow",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2ZlZjljNyIgc3Ryb2tlPSIjZWRjYTQ5Ii8+PC9zdmc+",
+    "instruction": "Ambil 30 minit sebelum sarapan."
+  },
+  {
+    "code": "METO50",
+    "generic_name": "Metoprolol Tartrate 50mg",
+    "brand_variants": ["Lopressor"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "Peach / Pink",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmZmVkZDEiIHN0cm9rZT0iI2ZmY2FhMSIvPjwvc3ZnPg==",
+    "instruction": "Ambil dengan makanan atau sejurus selepas makan."
+  },
+  {
+    "code": "PARA500",
+    "generic_name": "Paracetamol 500mg",
+    "brand_variants": ["Panadol", "Uphamol"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1-2 biji setiap 4-6 jam bila perlu. Maksimum 8 biji sehari."
+  },
+  {
+    "code": "AMOX500",
+    "generic_name": "Amoxicillin 500mg",
+    "brand_variants": ["Moxen"],
+    "form": "Capsule",
+    "shape": "Capsule",
+    "color": "Red/Yellow",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji 3 kali sehari (setiap 8 jam) sehingga habis."
+  },
+  {
+    "code": "METF500",
+    "generic_name": "Metformin 500mg",
+    "brand_variants": ["Glucophage"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1 biji 2 kali sehari selepas makan (sarapan dan makan malam)."
+  },
+  {
+    "code": "SIMVA20",
+    "generic_name": "Simvastatin 20mg",
+    "brand_variants": ["Zocor"],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "Peach",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmZmVkZDEiIHN0cm9rZT0iI2ZmY2FhMSIvPjwvc3ZnPg==",
+    "instruction": "Ambil 1 biji sekali sehari, pada waktu malam."
+  },
+  {
+    "code": "LOSA50",
+    "generic_name": "Losartan 50mg",
+    "brand_variants": ["Cozaar"],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji sekali sehari."
+  },
+  {
+    "code": "OMEP20",
+    "generic_name": "Omeprazole 20mg",
+    "brand_variants": ["Losec"],
+    "form": "Capsule",
+    "shape": "Capsule",
+    "color": "Pink/Brown",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji sekali sehari, 30 minit sebelum sarapan."
+  },
+  {
+    "code": "ASP100",
+    "generic_name": "Aspirin 100mg",
+    "brand_variants": ["Cardiprin"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1 biji sekali sehari selepas makan."
+  },
+  {
+    "code": "CLOP75",
+    "generic_name": "Clopidogrel 75mg",
+    "brand_variants": ["Plavix"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "Pink",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmZmVkZDEiIHN0cm9rZT0iI2ZmY2FhMSIvPjwvc3ZnPg==",
+    "instruction": "Ambil 1 biji sekali sehari."
+  },
+  {
+    "code": "SALB4",
+    "generic_name": "Salbutamol 4mg",
+    "brand_variants": ["Ventolin"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1 biji bila perlu untuk sesak nafas."
+  },
+  {
+    "code": "HYDRO12.5",
+    "generic_name": "Hydrochlorothiazide 12.5mg",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "Peach",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmZmVkZDEiIHN0cm9rZT0iI2ZmY2FhMSIvPjwvc3ZnPg==",
+    "instruction": "Ambil 1 biji sekali sehari pada waktu pagi."
+  },
+  {
+    "code": "DIPH25",
+    "generic_name": "Diphenhydramine 25mg",
+    "brand_variants": ["Benadryl"],
+    "form": "Capsule",
+    "shape": "Capsule",
+    "color": "Pink/White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1-2 biji bila perlu untuk alahan atau selsema."
+  },
+  {
+    "code": "PRED5",
+    "generic_name": "Prednisolone 5mg",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1 biji sekali sehari selepas sarapan. Ikut arahan doktor."
+  },
+  {
+    "code": "CAL500",
+    "generic_name": "Calcium Carbonate 500mg",
+    "brand_variants": ["Caltrate"],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji 2 kali sehari dengan makanan."
+  },
+  {
+    "code": "FOLIC5",
+    "generic_name": "Folic Acid 5mg",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "Yellow",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2ZlZjljNyIgc3Ryb2tlPSIjZWRjYTQ5Ii8+PC9zdmc+",
+    "instruction": "Ambil 1 biji sekali sehari."
+  },
+  {
+    "code": "BCOMP",
+    "generic_name": "Vitamin B Complex",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "Yellow",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2ZlZjljNyIgc3Ryb2tlPSIjZWRjYTQ5Ii8+PC9zdmc+",
+    "instruction": "Ambil 1 biji sekali sehari."
+  },
+  {
+    "code": "LORAT10",
+    "generic_name": "Loratadine 10mg",
+    "brand_variants": ["Clarityne"],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji sekali sehari bila perlu untuk alahan."
+  },
+  {
+    "code": "CELE200",
+    "generic_name": "Celecoxib 200mg",
+    "brand_variants": ["Celebrex"],
+    "form": "Capsule",
+    "shape": "Capsule",
+    "color": "White/Gold",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji sekali sehari selepas makan bila perlu untuk sakit."
+  },
+  {
+    "code": "TRAM50",
+    "generic_name": "Tramadol 50mg",
+    "brand_variants": ["Tramal"],
+    "form": "Capsule",
+    "shape": "Capsule",
+    "color": "Green/Yellow",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1-2 biji setiap 6 jam bila perlu untuk sakit."
+  },
+  {
+    "code": "DIAR5",
+    "generic_name": "Dicyclomine 5mg",
+    "brand_variants": ["Bentyl"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "Blue",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1 biji 3 kali sehari sebelum makan untuk sakit perut."
+  },
+  {
+    "code": "DOMP10",
+    "generic_name": "Domperidone 10mg",
+    "brand_variants": ["Motilium"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil 1 biji 3 kali sehari 30 minit sebelum makan (untuk loya)."
+  },
+  {
+    "code": "AUG625",
+    "generic_name": "Co-Amoxiclav 625mg",
+    "brand_variants": ["Augmentin"],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil 1 biji 2 kali sehari (setiap 12 jam) selepas makan."
+  },
+  {
+    "code": "PERIN4",
+    "generic_name": "Perindopril Erbumine 4mg",
+    "brand_variants": ["Perinace", "Coversyl"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil sekali sehari, sebelum sarapan."
+  },
+  {
+    "code": "AMLO10",
+    "generic_name": "Amlodipine Besylate 10mg",
+    "brand_variants": ["Norvasc", "Covasc"],
+    "form": "Tablet",
+    "shape": "Round",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiNmOWZhZmEiIHN0cm9rZT0iI2RlZGVkZWUiLz48L3N2Zz4=",
+    "instruction": "Ambil sekali sehari, pada masa yang sama setiap hari."
+  },
+  {
+    "code": "ATORV40",
+    "generic_name": "Atorvastatin 40mg",
+    "brand_variants": [],
+    "form": "Tablet",
+    "shape": "Oval",
+    "color": "White",
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAxNiI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYSIgc3Ryb2tlPSIjZGVkZWRlIi8+PC9zdmc+",
+    "instruction": "Ambil sekali sehari, bila-bila masa, dengan atau tanpa makanan."
+  }
+]
