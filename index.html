@@ -511,6 +511,7 @@
         async function loadMedicinesFromFile() {
             try {
                 // Try API first (Render.com backend)
+                console.log(`🔗 Attempting to load from API: ${API_URL}/api/medicines`);
                 const response = await fetch(`${API_URL}/api/medicines`);
                 
                 if (!response.ok) {
@@ -531,14 +532,14 @@
                 console.log(`✓ Loaded ${initialMedicines.length} medicines from API`);
                 return initialMedicines;
             } catch (error) {
-                console.error('Error loading medicines from API:', error);
+                console.warn(`⚠️ API loading failed: ${error.message}`);
                 
                 // Fallback: Try local medicines.json file
-                console.warn('⚠️ Falling back to local medicines.json file...');
+                console.log('🔄 Falling back to local medicines.json file...');
                 try {
                     const fallbackResponse = await fetch('medicines.json');
                     if (!fallbackResponse.ok) {
-                        throw new Error('Failed to load local medicines.json');
+                        throw new Error(`Local file returned ${fallbackResponse.status}: ${fallbackResponse.statusText}`);
                     }
                     const medicines = await fallbackResponse.json();
                     
@@ -552,8 +553,12 @@
                     console.log(`✓ Loaded ${initialMedicines.length} medicines from local file`);
                     return initialMedicines;
                 } catch (fallbackError) {
-                    console.error('Error loading from local file:', fallbackError);
-                    showMessage("Error Loading Medicines", "Could not load medicines from API or local file. Using empty database.");
+                    console.error(`❌ Failed to load from local file: ${fallbackError.message}`);
+                    console.error('📋 Debugging info:');
+                    console.error('  - Current URL:', window.location.href);
+                    console.error('  - API URL:', API_URL);
+                    console.error('  - API Error:', error.message);
+                    console.error('  - Local file error:', fallbackError.message);
                     return [];
                 }
             }
@@ -682,21 +687,30 @@
                     const medicines = await loadMedicinesFromFile();
                     
                     if (medicines.length === 0) {
-                        console.error("No medicines loaded from JSON file!");
-                        showMessage("Error", "Failed to load medicine database. Please ensure medicines.json file is present.");
+                        console.error("❌ No medicines loaded from API or local file!");
+                        showMessage(
+                            "⚠️ Database Loading Failed",
+                            "Could not load medicines from the server or local file.\n\n" +
+                            "Troubleshooting:\n" +
+                            "1. Wait 30 seconds (API may be waking up)\n" +
+                            "2. Hard refresh: Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows)\n" +
+                            "3. Check browser console (F12) for error details\n" +
+                            "4. Verify medicines.json is in the same folder as this file\n\n" +
+                            "See TROUBLESHOOTING_GUIDE.md for detailed help."
+                        );
                         return;
                     }
                     
-                    console.log(`Populating ${medicines.length} medicines into database...`);
+                    console.log(`✓ Populating ${medicines.length} medicines into database...`);
                     for (const med of medicines) {
                         await promisifyRequest(objectStore.add(med));
                     }
-                    console.log("✓ Initial data populated successfully from medicines.json");
+                    console.log("✓ Initial data populated successfully");
                 } else {
-                    console.log(`Database already populated with ${count} medicines.`);
+                    console.log(`✓ Database already populated with ${count} medicines.`);
                 }
             } catch (error) {
-                console.error("Error populating data: ", error);
+                console.error("❌ Error populating data: ", error);
                 showMessage("Database Error", `Failed to populate medicines: ${error.message}`);
             }
         }
